@@ -1,0 +1,9 @@
+[project]
+name = "sqlalchemy-for-orm"
+version = "0.1.0"
+description = "Python SQL toolkit and Object Relational Mapper(ORM)"
+readme = "README.md"
+requires-python = ">=3.14.2"
+dependencies = [
+    "sqlalchemy>=2.0.48",
+]
