@@ -14,9 +14,6 @@ session = get_session()
 
 
 
-
-## To insert fake initial data to database
-
 try:
 
     user_count = session.scalar(select(func.count(User.id)))

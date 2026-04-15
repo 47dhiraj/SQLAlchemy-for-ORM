@@ -1,4 +1,4 @@
-from database import get_session                ## importing get_session() function from database.py
+from database import get_session            
 
 from models import User
 
@@ -9,14 +9,10 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 
-## creates session object
+
 session = get_session()
 
 
-
-
-
-## To insert fake initial data to database
 
 try:
 
@@ -54,8 +50,6 @@ finally:
 
 
 
-
-## chaining multiple clause/methods
 
 
 try:

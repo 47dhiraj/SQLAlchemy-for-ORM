@@ -11,10 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 
-
 session = get_session()
-
-
 
 
 
@@ -30,7 +27,6 @@ try:
 
     user_count = session.scalar(select(func.count(User.id)))
     # print('user count: ', user_count)
-
 
     if user_count < 1:
         
@@ -59,8 +55,6 @@ finally:
 
 
 
-
-
 try:
 
 
@@ -77,8 +71,6 @@ try:
 
 
 
-
-
     users_stmt = select(User).order_by(User.age.desc())
     # users_stmt = select(User).order_by(User.id.desc())
 
@@ -90,16 +82,12 @@ try:
 
 
 
-
-
-
     users_stmt = select(User).order_by(User.age, User.username)
 
     all_users = session.scalars(users_stmt).all()
 
     for user in all_users:
         print(f"id: {user.id}  name: {user.username}  age: {user.age}")
-
 
 
 

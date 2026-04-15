@@ -10,14 +10,12 @@ from sqlalchemy.orm import (
 
 
 
-## creating Base model class
 class Base(DeclarativeBase):
     pass
 
 
 
 
-## creating a User model class
 class User(Base):
 
     __tablename__ = "users"

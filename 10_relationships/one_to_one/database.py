@@ -7,10 +7,13 @@ from sqlalchemy.orm import (
 from models import Base
 
 
+
+
 url_object = URL.create(
     drivername="sqlite",
-    database="one_to_many.db"
+    database="one_to_one.db"
 )
+
 
 
 
@@ -22,7 +25,5 @@ Session = sessionmaker(bind=engine)
 
 
 
-
 def get_session():
     return Session()
-
