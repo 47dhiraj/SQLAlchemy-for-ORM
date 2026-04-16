@@ -1,8 +1,9 @@
 from typing import Optional, List
 
 from sqlalchemy import Integer, String, create_engine, ForeignKey
-
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
 
 
 
@@ -11,9 +12,11 @@ engine = create_engine('sqlite:///connection.db', echo=True)
 
 
 
+
 ## Creates a Base SQLAlchemy model
 class Base(DeclarativeBase):
     pass
+
 
 
 
@@ -27,6 +30,7 @@ class User(Base):
     name: Mapped[Optional[str]] = mapped_column(String(60))
 
     age: Mapped[int] = mapped_column(String(30), nullable=True)
+
 
 
 

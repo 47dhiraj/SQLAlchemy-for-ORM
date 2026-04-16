@@ -1,22 +1,10 @@
 from models import session, User, Comment, Post, Category, Tag
 
-
 from sqlalchemy import select
-
-
 from sqlalchemy.exc import SQLAlchemyError
 
 
-
-
-
 ## *********************************** CRUD OPERATIONS ***********************************
-
-
-
-
-
-
 
 
 
