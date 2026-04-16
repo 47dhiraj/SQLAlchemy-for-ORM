@@ -10,4 +10,4 @@
 
 ### SQLAlchemy - Python SQL toolkit and Object Relational Mapper(ORM)
 
-#### SQLAlchemy - version >= 2.0.48
+#### SQLAlchemy - version >= 2.0.49
