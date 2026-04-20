@@ -26,23 +26,21 @@ try:
         physics = Course(title='Physics')
 
         ram = Student(
-            name='Ram', 
-            enrollments=[Enrollment(course=c, grade="A") for c in [math, physics]]
+            name='Ram',
+            enrollments=[
+                Enrollment(course=math, grade="A+"),
+                Enrollment(course=physics, grade="A")
+            ]
         )
-
-        session.add(ram)
-        
-        session.flush()                         ## .flush() allows developer to preserve insertion order in db table       
 
         shyam = Student(
-            name='Shyam', 
-            enrollments=[Enrollment(course=math, grade="A+")]
+            name='Shyam',
+            enrollments=[
+                Enrollment(course=math, grade="A")
+            ]
         )
 
-        session.add(shyam)
-
-
-        ## session.add_all([ram, shyam])        ## optional: to add at once(but, doesn't preserve insertion order in db table)
+        session.add_all([ram, shyam])
         session.commit()
 
 
@@ -61,7 +59,6 @@ try:
     ram_courses = [enrollment.course.title for enrollment in ram.enrollments]
 
     print(f"Ram's Courses: {ram_courses}")
-
     # for course in ram_courses:
     #     print(course)
     
@@ -70,7 +67,6 @@ try:
     shyam_courses = [enrollment.course.title for enrollment in shyam.enrollments]
 
     print(f"Shyam's Courses: {shyam_courses}")
-
     # for course in shyam_courses:
     #     print(course)
 
@@ -89,7 +85,6 @@ try:
     math_students = [enrollment.student.name for enrollment in math.enrollments]
 
     print(f"Math students: {math_students}")
-
     # for student in math_students:
     #     print(student)
 
@@ -98,7 +93,6 @@ try:
     physics_students = [enrollment.student.name for enrollment in physics.enrollments]
 
     print(f"Physics students: {physics_students}")
-
     # for student in physics_students:
     #     print(student)
 
