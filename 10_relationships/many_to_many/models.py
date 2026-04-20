@@ -9,6 +9,8 @@ from sqlalchemy.orm import (
 
 
 
+
+
 class Base(DeclarativeBase):
 
     pass
@@ -24,26 +26,6 @@ class BaseModel(Base):
 
 
 
-
-## Enrollment is a model for Association(Bridging) Table
-class Enrollment(BaseModel):
-
-    __tablename__ = "enrollments"
-    
-    id: Mapped[int] = mapped_column(primary_key=True)
-
-    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"))    
-    course_id: Mapped[int] = mapped_column(ForeignKey("courses.id"))        
-
-    student: Mapped["Student"] = relationship(back_populates="enrollments")
-    course: Mapped["Course"] = relationship(back_populates="enrollments")
-
-    grade: Mapped[str | None] = mapped_column(String, nullable=True)        ## grade is a extra field
-
-
-
-
-
 class Student(BaseModel):
 
     __tablename__ = "students"
@@ -53,9 +35,8 @@ class Student(BaseModel):
     
     enrollments: Mapped[List["Enrollment"]] = relationship(back_populates="student") 
 
-    ## Optional (Developer choice):
+    ## Optional (only for developer ease):
     # courses: Mapped[List["Course"]] = relationship(secondary="enrollments", viewonly=True)
-
 
 
 
@@ -70,6 +51,27 @@ class Course(BaseModel):
     
     enrollments: Mapped[List["Enrollment"]] = relationship(back_populates="course")
 
-    ## Optional (Developer choice):
+    ## Optional (only for developer ease):
     # students: Mapped[List["Student"]] = relationship(secondary="enrollments", viewonly=True)
+
+
+
+
+
+
+## Enrollment is Association(Bridging) model/table
+class Enrollment(BaseModel):
+
+    __tablename__ = "enrollments"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"))    
+    course_id: Mapped[int] = mapped_column(ForeignKey("courses.id"))        
+
+    student: Mapped["Student"] = relationship(back_populates="enrollments")
+    course: Mapped["Course"] = relationship(back_populates="enrollments")
+
+    ## grade is extra field/data
+    grade: Mapped[str | None] = mapped_column(String, nullable=True)        
 

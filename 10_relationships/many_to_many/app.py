@@ -25,24 +25,25 @@ try:
         math = Course(title='Mathematics')
         physics = Course(title='Physics')
 
-
         ram = Student(
             name='Ram', 
             enrollments=[Enrollment(course=c, grade="A") for c in [math, physics]]
         )
+
+        session.add(ram)
         
+        session.flush()                         ## .flush() allows developer to preserve insertion order in db table       
+
         shyam = Student(
             name='Shyam', 
             enrollments=[Enrollment(course=math, grade="A+")]
         )
 
+        session.add(shyam)
 
-        session.add_all([ram, shyam])
+
+        ## session.add_all([ram, shyam])        ## optional: to add at once(but, doesn't preserve insertion order in db table)
         session.commit()
-
-        users_inserted = session.scalar(select(func.count(Student.id)))
-        print(f"{users_inserted} users created/inserted.")
-
 
 
 
