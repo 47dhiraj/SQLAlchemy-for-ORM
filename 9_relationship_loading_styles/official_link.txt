@@ -1,0 +1,8 @@
+
+## Relationship Loading Techniques/Styles:
+
+
+--> https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
+
+
+
