@@ -1,116 +1,108 @@
 import asyncio
-from datetime import date
-from sqlalchemy import select
-from database import async_engine, AsyncSessionLocal, Base, DatabaseSession
+
+from database import DatabaseSession, close_db, get_db, init_db, ping_db
+
 from models import User
 
-
-
-
-
-
-async def seed_initial_data(db: DatabaseSession) -> None:
-
-    try:
-
-        stmt = select(select(User.id).exists())
-
-        result = await db.execute(stmt)
-        user_exists = result.scalar()
-
-
-        if user_exists:
-            print("\n[Seed Skipped] Database already contains user records.\n")
-            return
-
-
-        new_user = User(
-            username="johndoe",
-            email="john@example.com",
-            password="secure_hashed_password_here",
-            dob=date(2000, 1, 21),
-            address={"street": "456789", "city": "Parallel Universe", "zip": "00000"}
-        )
-
-
-        db.add(new_user)
-        await db.commit()
-
-        print("\n[Transaction Success] User seeded successfully.\n")
-
-
-
-    except Exception as error:
-
-        print(f"\n[Transaction Error] Exception caught. Executing manual rollback: {error}\n")
-
-        await db.rollback()
-        raise error
+from sqlalchemy import func, select
 
 
 
 
 
 
+async def seed_user(db: DatabaseSession) -> User | None:
+
+    exists_stmt = select(select(User.id).exists())
+
+    result = await db.execute(exists_stmt)
+    any_user_exists = result.scalar()
+
+
+    if any_user_exists:
+        print("\n[SKIPPED SEED] Database already contains records. Skipping seeding entirely.\n")
+        return None
+
+
+    user = User(
+        username="johndoe", 
+        email="johndoe@example.com", 
+        full_name="John Doe"
+    )
+
+    db.add(user)
+    
+    await db.commit()
+    await db.refresh(user)         
+
+    print(f"\n[DATABASE SEEDED] Created initial user: {user.username} (ID: {user.id})\n")
+
+    return user
 
 
 
 
 
-async def fetch_user_by_username(db: DatabaseSession, username: str) -> User | None:
+
+async def get_user_by_username(db: DatabaseSession, username: str) -> User | None:
+    """
+        Helper function to fetch a single user by their username string.
+    """
 
     stmt = select(User).where(User.username == username)
+
+    result = await db.execute(stmt)
+
+    return result.scalar_one_or_none()
+
+
+
+
+
+
+
+
+async def main() -> None:
+
+
+    ## checking database connection
+    if not await ping_db():
+        print("\n[DATABASE ERROR] Database is unreachable\n")
+        return
     
 
-    try:
+    print("\n[CONNECTED TO DATABASE] Database is online. Proceeding to schema check...\n")
 
-        result = await db.execute(stmt)
 
-        return result.scalars().first()
+
+    ## creating schemas & tables
+    await init_db()
+
+    print("\n[SCHEMAS & TABLES Created] Database schemas and tables are synchronized.\n")
+
+
+
+    ## Seeding the database
+    async with get_db() as db:
+        await seed_user(db)
+
+
+
+    ## retreiving/fetching user
+    async with get_db() as db:
+        user = await get_user_by_username(db, "johndoe")
         
+        if user:
+            print(f"[main] Verified user in DB: {user.username} (Created: {user.created_at})")
 
-    except Exception as error:
 
-        print(f"\n[Read Error] Query failed. Executing manual rollback: {error}\n")
 
-        await db.rollback()
-
-        raise error
-
+    ## cleans up the global connection pool sockets completely just before exit or before end of the script
+    await close_db()
 
 
 
 
-
-
-
-
-
-
-async def main():
-
-    async with async_engine.begin() as conn:
-        
-        # await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)                  
-
-
-
-    async with AsyncSessionLocal() as session:
-        await seed_initial_data(session)
-
-
-
-    async with AsyncSessionLocal() as session:
-        user = await fetch_user_by_username(session, "johndoe")
-
-
-
-    if user:
-        print(f"\n[Production Read] User Found: {user.username} | Email: {user.email}\n")
-
-    else:
-        print("\n[Production Read] User not found.\n")
 
 
 
@@ -123,4 +115,3 @@ async def main():
 if __name__ == "__main__":
 
     asyncio.run(main())
-
