@@ -65,10 +65,10 @@ async def init_db() -> None:
         Registers schemas and builds missing database tables natively inside PostgreSQL.
     """
 
-    import models                   ## importing models for prevention of any prior crash
+    import models                   ## Below, .create_all to create tables, need all models to be loaded first, thus we have imported out models
 
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)           ## this line requires our model to be loaded prior
+        await conn.run_sync(Base.metadata.create_all)       ## .create_all creates all tables
 
 
 
